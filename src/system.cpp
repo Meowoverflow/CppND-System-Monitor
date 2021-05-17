@@ -1,13 +1,16 @@
+#include "system.h"
+
 #include <unistd.h>
+#include <utime.h>
+
 #include <cstddef>
 #include <set>
 #include <string>
 #include <vector>
 
+#include "linux_parser.h"
 #include "process.h"
 #include "processor.h"
-#include "system.h"
-#include "linux_parser.h"
 
 using std::set;
 using std::size_t;
@@ -24,7 +27,11 @@ vector<Process>& System::Processes() { return processes_; }
 std::string System::Kernel() { return LinuxParser::Kernel() ; }
 
 // TODO: Return the system's memory utilization
-float System::MemoryUtilization() { return 0.0; }
+float System::MemoryUtilization() {
+  float utilization = LinuxParser::MemoryUtilization();
+  return utilization;
+
+}
 
 // TODO: Return the operating system name
 std::string System::OperatingSystem() { return LinuxParser::OperatingSystem(); }
