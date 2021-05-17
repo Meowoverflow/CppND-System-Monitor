@@ -30,6 +30,7 @@ std::string NCursesDisplay::ProgressBar(float percent) {
 
 void NCursesDisplay::DisplaySystem(System& system, WINDOW* window) {
   int row{0};
+  long uptime = system.UpTime(); //
   mvwprintw(window, ++row, 2, ("OS: " + system.OperatingSystem()).c_str());
   mvwprintw(window, ++row, 2, ("Kernel: " + system.Kernel()).c_str());
   mvwprintw(window, ++row, 2, "CPU: ");
@@ -47,8 +48,10 @@ void NCursesDisplay::DisplaySystem(System& system, WINDOW* window) {
   mvwprintw(
       window, ++row, 2,
       ("Running Processes: " + to_string(system.RunningProcesses())).c_str());
+ // mvwprintw(window, ++row, 2,
+   //         ("Up Time: " + Format::ElapsedTime(system.UpTime())).c_str()); //this was not working
   mvwprintw(window, ++row, 2,
-            ("Up Time: " + Format::ElapsedTime(system.UpTime())).c_str());
+            ("Up Time: " + to_string(uptime)).c_str());
   wrefresh(window);
 }
 
