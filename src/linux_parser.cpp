@@ -2,7 +2,7 @@
 #include <unistd.h>
 #include <string>
 #include <vector>
-
+#include <stdexcept>
 #include "linux_parser.h"
 
 using std::stof;
@@ -78,6 +78,8 @@ float LinuxParser::MemoryUtilization() {
       linestream >> dummy >> memory_total_free[i];
     }
   }
+  if (memory_total_free[0] == 0)
+    throw std::runtime_error("Math and parsing errors: Attempted to divide by Zero , total memory = 0\n");
   return (memory_total_free[0] - memory_total_free[1]) / memory_total_free[0] ; //used_memory / total_memory
 }
 
