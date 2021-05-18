@@ -17,13 +17,18 @@ using std::size_t;
 using std::string;
 using std::vector;
 
+System::System() {
+    vector pids = LinuxParser::Pids();
+    for(auto pid : pids) {
+      this->processes_.push_back(Process(pid));
+    }
+}
 // TODO: Return the system's CPU
 Processor& System::Cpu() { return cpu_; }
 
 // TODO: Return a container composed of the system's processes
 vector<Process>& System::Processes() { return processes_; }
 
-// TODO: Return the system's kernel identifier (string)
 std::string System::Kernel() { return LinuxParser::Kernel() ; }
 
 float System::MemoryUtilization() { return LinuxParser::MemoryUtilization(); }
