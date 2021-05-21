@@ -208,7 +208,7 @@ long LinuxParser::UpTime(int pid) {
   return 0;
 }
 
-float LinuxParser::CpuUtilization(int pid) {
+float LinuxParser::CpuUtilization  (int pid) {
   vector<string> tokens(22);
   string line , token;
   long uptime , utime , stime , cutime , cstime , starttime , totalTime;
@@ -236,3 +236,5 @@ float LinuxParser::CpuUtilization(int pid) {
   cpuUtilization = 100.0 * ((totalTime / hertz) / seconds) ;
   return cpuUtilization;
 }
+
+
