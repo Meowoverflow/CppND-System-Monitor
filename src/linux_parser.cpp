@@ -111,7 +111,7 @@ vector<string> LinuxParser::CpuUtilization() { return {}; }
 
 int LinuxParser::TotalProcesses() {
   int totalProcesses;
-  std::string line , processes;
+  string line , processes;
   std::ifstream filestream(kProcDirectory + kStatFilename);
   if (filestream.is_open()) {
     while (std::getline(filestream, line)) {
@@ -132,15 +132,13 @@ int LinuxParser::RunningProcesses() {
     while (std::getline(filestream, line)) {
       std::istringstream linestream(line);
       linestream >> processes >> runningProcs;
-      if (processes.compare("procs_running") == 0)
+      if (processes == "procs_running")
         return runningProcs;
     }
   }
   return 0;
 }
 
-// TODO: Read and return the command associated with a process
-// REMOVE: [[maybe_unused]] once you define the function
 string LinuxParser::Command(int pid) {
   string line;
   std::ifstream filestream(kProcDirectory + "/" + to_string(pid) + kCmdlineFilename);
@@ -152,8 +150,6 @@ string LinuxParser::Command(int pid) {
   return string();
 }
 
-// TODO: Read and return the memory used by a process
-// REMOVE: [[maybe_unused]] once you define the function
 string LinuxParser::Ram(int pid) {
   string line , vmsizeKey  ;
   int vmsizeValue;
@@ -210,4 +206,33 @@ long LinuxParser::UpTime(int pid) {
     return stol(starttime)/sysconf(_SC_CLK_TCK);
   }
   return 0;
+}
+
+float LinuxParser::CpuUtilization(int pid) {
+  vector<string> tokens(22);
+  string line , token;
+  long uptime , utime , stime , cutime , cstime , starttime , totalTime;
+  double seconds ;
+  float cpuUtilization;
+  float hertz = sysconf(_SC_CLK_TCK);
+  uptime = LinuxParser::UpTime();
+  std::ifstream filestream(kProcDirectory + "/" + to_string(pid) + kStatFilename);
+  if (filestream.is_open()) {
+    getline(filestream , line);
+    std::istringstream linestream(line);
+    for (int i = 0; i < 22; ++i) {
+      linestream >>  token ; //(22) starttime
+      tokens[i] = token;
+    }
+    int dum = 0;
+  }
+  utime = stol(tokens[13]) ; // #14
+  stime = stol(tokens[14]) ; // #15
+  cutime = stol(tokens[15]) ; // #16
+  cstime = stol(tokens[16]) ; // #17
+  starttime = stol(tokens[21]) ; // #15
+  totalTime = utime + stime + cutime + cstime;
+  seconds = uptime - (starttime / hertz);
+  cpuUtilization = 100.0 * ((totalTime / hertz) / seconds) ;
+  return cpuUtilization;
 }
