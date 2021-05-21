@@ -7,6 +7,7 @@
 #include <set>
 #include <string>
 #include <vector>
+#include <utility>
 
 #include "linux_parser.h"
 #include "process.h"
@@ -17,22 +18,28 @@ using std::size_t;
 using std::string;
 using std::vector;
 
-System::System() {
-    vector pids = LinuxParser::Pids();
-    for(auto pid : pids) {
-      this->processes_.push_back(Process(pid));
-    }
-}
+System::System()
+    : kernel_(LinuxParser::Kernel()),
+      os_(LinuxParser::OperatingSystem())
+{}
 
 Processor& System::Cpu() { return cpu_; }
 
-vector<Process>& System::Processes() { return processes_; }
+vector<Process>& System::Processes() {
+  vector pids = LinuxParser::Pids();
+  vector<Process> newProcesses;
+  for(auto pid : pids) {
+    newProcesses.push_back(Process(pid));
+  }
+  processes_ = std::move(newProcesses);
+  return processes_;
+}
 
-std::string System::Kernel() { return LinuxParser::Kernel() ; }
+std::string System::Kernel() { return kernel_ ;}
 
 float System::MemoryUtilization() { return LinuxParser::MemoryUtilization(); }
 
-std::string System::OperatingSystem() { return LinuxParser::OperatingSystem(); }
+std::string System::OperatingSystem() { return os_; }
 
 int System::RunningProcesses() { return LinuxParser::RunningProcesses(); }
 

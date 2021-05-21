@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <stdexcept>
+#include <thread>
 #include "linux_parser.h"
 
 using std::stof;
@@ -224,7 +225,6 @@ float LinuxParser::CpuUtilization  (int pid) {
       linestream >>  token ; //(22) starttime
       tokens[i] = token;
     }
-    int dum = 0;
   }
   utime = stol(tokens[13]) ; // #14
   stime = stol(tokens[14]) ; // #15
@@ -237,4 +237,12 @@ float LinuxParser::CpuUtilization  (int pid) {
   return cpuUtilization;
 }
 
-
+float LinuxParser::CpuUtilizationPro(int pid) {
+  float utilOld , utilNew ;
+  utilOld = LinuxParser::CpuUtilization(pid);
+  std::this_thread::sleep_for(std::chrono::milliseconds(50));
+  utilNew = LinuxParser::CpuUtilization(pid);
+  if (utilOld > utilNew)
+    return 0.0;
+  return (utilNew - utilOld) ;
+}
