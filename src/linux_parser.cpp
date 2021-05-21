@@ -233,7 +233,7 @@ float LinuxParser::CpuUtilization  (int pid) {
   starttime = stol(tokens[21]) ; // #15
   totalTime = utime + stime + cutime + cstime;
   seconds = uptime - (starttime / hertz);
-  cpuUtilization = 100.0 * ((totalTime / hertz) / seconds) ;
+  cpuUtilization =  ((totalTime / hertz) / seconds) ;
   return cpuUtilization;
 }
 
