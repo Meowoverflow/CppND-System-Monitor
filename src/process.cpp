@@ -20,8 +20,8 @@ Process::Process(int pid)
 int Process::Pid() { return pid_; }
 
 // TODO: Return this process's CPU utilization
-//float Process::CpuUtilization() const { return LinuxParser::CpuUtilization(pid_); }
-float Process::CpuUtilization() const { return LinuxParser::CpuUtilizationPro(pid_); }
+float Process::CpuUtilization() const { return LinuxParser::CpuUtilization(pid_); }
+//float Process::CpuUtilization() const { return LinuxParser::CpuUtilizationPro(pid_); }
 
 string Process::Command() { return command_; }
 
