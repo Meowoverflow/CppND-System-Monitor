@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include <utility>
+#include <algorithm>
 
 #include "linux_parser.h"
 #include "process.h"
@@ -24,7 +25,6 @@ System::System()
 {}
 
 Processor& System::Cpu() { return cpu_; }
-
 vector<Process>& System::Processes() {
   vector pids = LinuxParser::Pids();
   vector<Process> newProcesses;
@@ -32,6 +32,7 @@ vector<Process>& System::Processes() {
     newProcesses.push_back(Process(pid));
   }
   processes_ = std::move(newProcesses);
+  std::sort(processes_.begin() , processes_.end() , std::greater<Process>());
   return processes_;
 }
 

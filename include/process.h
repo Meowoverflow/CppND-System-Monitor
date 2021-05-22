@@ -16,12 +16,13 @@ class Process {
   std::string Ram();
   long int UpTime();
   bool operator<(Process const& a) const;
+  bool operator>(Process const& a) const;
 
 
   // TODO: Declare any necessary private members
  private:
   int pid_;
-  std::string const user_ , command_ ;
+  std::string  user_ , command_ ;
 
 };
 
