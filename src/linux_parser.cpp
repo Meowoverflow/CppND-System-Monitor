@@ -234,21 +234,11 @@ float LinuxParser::CpuUtilization  (int pid) {
     stime = stol(tokens[14]) ; // #15
     cutime = stol(tokens[15]) ; // #16
     cstime = stol(tokens[16]) ; // #17
-    starttime = stol(tokens[21]) ; // #15
+    starttime = stol(tokens[21]) ; // #22
     totalTime = utime + stime + cutime + cstime;
     seconds = uptime - (starttime / hertz);
     cpuUtilization =  (totalTime / hertz) * 1.0 / seconds ;
     return cpuUtilization;
   }
   return 0.0;
-}
-
-float LinuxParser::CpuUtilizationPro(int pid) {
-  float utilOld , utilNew ;
-  utilOld = LinuxParser::CpuUtilization(pid);
-  std::this_thread::sleep_for(std::chrono::milliseconds(50));
-  utilNew = LinuxParser::CpuUtilization(pid);
-  if (utilOld > utilNew)
-    return 0.0;
-  return (utilNew - utilOld) ;
 }

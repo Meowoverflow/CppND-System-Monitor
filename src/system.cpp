@@ -33,7 +33,8 @@ vector<Process>& System::Processes() {
   }
   std::sort(newProcesses.begin() , newProcesses.end() , std::greater<Process>());
   processes_.clear();
-  std::move(newProcesses.begin() , newProcesses.begin()+15, std::back_inserter(processes_));
+  std::move(newProcesses.begin() , newProcesses.begin()+10, std::back_inserter(processes_));
+  newProcesses.clear();
   return processes_;
 }
 
