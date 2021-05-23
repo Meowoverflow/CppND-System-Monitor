@@ -31,8 +31,9 @@ vector<Process>& System::Processes() {
   for(auto pid : pids) {
     newProcesses.push_back(Process(pid));
   }
-  processes_ = std::move(newProcesses);
-  std::sort(processes_.begin() , processes_.end() , std::greater<Process>());
+  std::sort(newProcesses.begin() , newProcesses.end() , std::greater<Process>());
+  processes_.clear();
+  std::move(newProcesses.begin() , newProcesses.begin()+15, std::back_inserter(processes_));
   return processes_;
 }
 

@@ -159,7 +159,10 @@ string LinuxParser::Ram(int pid) {
     while (std::getline(filestream, line)) {
       std::istringstream linestream(line);
       linestream >> vmsizeKey >> vmsizeValue;
-      if (vmsizeKey == "VmSize:") return to_string(vmsizeValue / 1000);
+      if (vmsizeKey == "VmSize:") {
+        vmsizeValue = vmsizeValue / 1000;
+        return to_string(vmsizeValue);
+      }
     }
   }
   return string();
@@ -196,15 +199,17 @@ string LinuxParser::User(int pid) {
 }
 
 long LinuxParser::UpTime(int pid) {
-  string line , starttime;
+  string line , dummy;
+  long starttime;
   std::ifstream filestream(kProcDirectory + "/" + to_string(pid) + kStatFilename);
   if (filestream.is_open()) {
     getline(filestream , line);
     std::istringstream linestream(line);
-    for (int i = 0; i < 22; ++i) {
-      linestream >>  starttime ; //(22) starttime
+    for (int i = 0; i < 21; ++i) {
+      linestream >>  dummy ; //(22) starttime
     }
-    return stol(starttime)/sysconf(_SC_CLK_TCK);
+    linestream >> starttime;
+    return starttime * 1.0 /sysconf(_SC_CLK_TCK);
   }
   return 0;
 }
@@ -225,16 +230,17 @@ float LinuxParser::CpuUtilization  (int pid) {
       linestream >>  token ; //(22) starttime
       tokens[i] = token;
     }
+    utime = stol(tokens[13]) ; // #14
+    stime = stol(tokens[14]) ; // #15
+    cutime = stol(tokens[15]) ; // #16
+    cstime = stol(tokens[16]) ; // #17
+    starttime = stol(tokens[21]) ; // #15
+    totalTime = utime + stime + cutime + cstime;
+    seconds = uptime - (starttime / hertz);
+    cpuUtilization =  (totalTime / hertz) * 1.0 / seconds ;
+    return cpuUtilization;
   }
-  utime = stol(tokens[13]) ; // #14
-  stime = stol(tokens[14]) ; // #15
-  cutime = stol(tokens[15]) ; // #16
-  cstime = stol(tokens[16]) ; // #17
-  starttime = stol(tokens[21]) ; // #15
-  totalTime = utime + stime + cutime + cstime;
-  seconds = uptime - (starttime / hertz);
-  cpuUtilization =  ((totalTime / hertz) / seconds) ;
-  return cpuUtilization;
+  return 0.0;
 }
 
 float LinuxParser::CpuUtilizationPro(int pid) {
