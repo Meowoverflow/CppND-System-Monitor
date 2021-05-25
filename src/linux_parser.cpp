@@ -132,18 +132,18 @@ string LinuxParser::Command(int pid) {
   }
   return string();
 }
-
+// used VmData instead of VmSize as in suggestions.
 string LinuxParser::Ram(int pid) {
-  string line , vmsizeKey  ;
-  int vmsizeValue;
+  string line , vmDataKey  ;
+  int vmDataValue;
   std::ifstream filestream(kProcDirectory + "/" + to_string(pid) + kStatusFilename);
   if (filestream.is_open()) {
     while (std::getline(filestream, line)) {
       std::istringstream linestream(line);
-      linestream >> vmsizeKey >> vmsizeValue;
-      if (vmsizeKey == "VmSize:") {
-        vmsizeValue = vmsizeValue / 1000;
-        return to_string(vmsizeValue);
+      linestream >> vmDataKey >> vmDataValue;
+      if (vmDataKey == "VmData:") {
+        vmDataValue = vmDataValue / 1000;
+        return to_string(vmDataValue);
       }
     }
   }
