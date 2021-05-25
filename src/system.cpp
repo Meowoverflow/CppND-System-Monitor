@@ -25,16 +25,18 @@ System::System()
 {}
 
 Processor& System::Cpu() { return cpu_; }
+
 vector<Process>& System::Processes() {
+  set<int> uniquePids ;
   vector pids = LinuxParser::Pids();
-  vector<Process> newProcesses;
-  for(auto pid : pids) {
-    newProcesses.push_back(Process(pid));
+  for(auto pid : processes_) {
+    uniquePids.emplace(pid.Pid());
   }
-  std::sort(newProcesses.begin() , newProcesses.end() , std::greater<Process>());
-  processes_.clear();
-  std::move(newProcesses.begin() , newProcesses.begin()+10, std::back_inserter(processes_));
-  newProcesses.clear();
+  for(auto pid : pids) {
+    if (uniquePids.find(pid) == uniquePids.end())
+      processes_.emplace_back(pid);
+  }
+  std::sort(processes_.begin() , processes_.end() , std::greater<Process>());
   return processes_;
 }
 
