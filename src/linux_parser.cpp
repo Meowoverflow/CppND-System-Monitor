@@ -3,7 +3,6 @@
 #include <string>
 #include <vector>
 #include <stdexcept>
-#include <thread>
 #include "linux_parser.h"
 
 using std::stof;
@@ -45,7 +44,7 @@ string LinuxParser::Kernel() {
   return kernel;
 }
 
-// ToDo BONUS: Update this to use std::filesystem
+// BONUS: Update this to use std::filesystem
 vector<int> LinuxParser::Pids() {
   vector<int> pids;
   DIR* directory = opendir(kProcDirectory.c_str());
@@ -93,8 +92,6 @@ long LinuxParser::UpTime() {
   }
   return 0;
 }
-
-// TODO: Read and return the number of jiffies for the system
 
 int LinuxParser::TotalProcesses() {
   int totalProcesses;
