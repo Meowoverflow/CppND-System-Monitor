@@ -101,7 +101,7 @@ int LinuxParser::TotalProcesses() {
     while (std::getline(filestream, line)) {
       std::istringstream linestream(line);
       linestream >> processes >> totalProcesses;
-      if (processes.compare("processes") == 0)
+      if (processes == filterProcesses)
         return totalProcesses;
     }
   }
@@ -116,7 +116,7 @@ int LinuxParser::RunningProcesses() {
     while (std::getline(filestream, line)) {
       std::istringstream linestream(line);
       linestream >> processes >> runningProcs;
-      if (processes == "procs_running")
+      if (processes == filterRunningProcesses)
         return runningProcs;
     }
   }
@@ -144,7 +144,7 @@ string LinuxParser::Ram(int pid) {
     while (std::getline(filestream, line)) {
       std::istringstream linestream(line);
       linestream >> vmDataKey >> vmDataValue;
-      if (vmDataKey == "VmData:") {
+      if (vmDataKey == filterVmData) {
         vmDataValue = vmDataValue / 1000;
         return to_string(vmDataValue);
       }
@@ -162,7 +162,7 @@ string LinuxParser::Uid(int pid) {
     while (std::getline(filestream, line)) {
       std::istringstream linestream(line);
       linestream >> tmp >> uid;
-      if (tmp.compare("Uid:") == 0)
+      if (tmp == filterUID)
         return uid;
     }
   }
