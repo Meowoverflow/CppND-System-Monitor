@@ -12,14 +12,19 @@ using std::to_string;
 using std::vector;
 
 Process::Process(int pid)
-    : pid_(pid) ,
-      command_(LinuxParser::Command(pid)) ,
-      user_(LinuxParser::User(pid))
-    { }
+    : pid_(pid) 
+    { 
+      this->Command(pid);
+      this->User(pid);
+    }
 
 int Process::Pid() { return pid_; }
-
-// TODO: Return this process's CPU utilization
+void Process::Command(int pid) {
+  this->command_ = LinuxParser::Command(pid);
+}
+void Process::User(int pid) {
+  this->user_ = LinuxParser::User(pid);
+}
 float Process::CpuUtilization() const { return LinuxParser::CpuUtilization(pid_); }
 
 string Process::Command() { return command_; }

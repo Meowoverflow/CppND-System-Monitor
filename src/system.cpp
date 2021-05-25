@@ -28,7 +28,7 @@ Processor& System::Cpu() { return cpu_; }
 
 vector<Process>& System::Processes() {
   set<int> uniquePids ;
-  vector pids = LinuxParser::Pids();
+  vector<int> pids = LinuxParser::Pids();
   for(auto pid : processes_) {
     uniquePids.emplace(pid.Pid());
   }

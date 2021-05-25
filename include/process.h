@@ -11,7 +11,9 @@ class Process {
   Process(int pid);
   int Pid();
   std::string User();
+  void User(int pid);
   std::string Command();
+  void Command(int pid);
   float CpuUtilization() const;
   std::string Ram();
   long int UpTime();
