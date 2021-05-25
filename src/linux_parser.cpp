@@ -151,7 +151,9 @@ string LinuxParser::Ram(int pid) {
 }
 
 string LinuxParser::Uid(int pid) {
-  string line , tmp , uid;
+  string line ;
+  string tmp ;
+  string uid;
   std::ifstream filestream(kProcDirectory + "/" + to_string(pid) + kStatusFilename);
   if (filestream.is_open()) {
     while (std::getline(filestream, line)) {
@@ -165,14 +167,17 @@ string LinuxParser::Uid(int pid) {
 }
 
 string LinuxParser::User(int pid) {
-  string line , uname , x , uid;
+  string line ;
+  string uname ;
+  string dummy ;
+  string  uid;
   string uid_key = LinuxParser::Uid(pid);
   std::ifstream filestream(kPasswordPath);
   if (filestream.is_open()) {
     while (std::getline(filestream, line)) {
       std::replace(line.begin(), line.end(), ':', ' ');
       std::istringstream linestream(line);
-      linestream >> uname >> x >> uid;
+      linestream >> uname >> dummy >> uid;
       if (uid == uid_key) return uname;
     }
   }
@@ -181,8 +186,10 @@ string LinuxParser::User(int pid) {
 }
 
 long LinuxParser::UpTime(int pid) {
-  string line , dummy;
-  long starttime;
+  string line ;
+  string dummy;
+  long startTime;
+  auto systemUpTime = LinuxParser::UpTime();
   std::ifstream filestream(kProcDirectory + "/" + to_string(pid) + kStatFilename);
   if (filestream.is_open()) {
     getline(filestream , line);
@@ -190,8 +197,8 @@ long LinuxParser::UpTime(int pid) {
     for (int i = 0; i < 21; ++i) {
       linestream >>  dummy ; //(22) starttime
     }
-    linestream >> starttime;
-    return starttime * 1.0 /sysconf(_SC_CLK_TCK);
+    linestream >> startTime;
+    return systemUpTime - (startTime * 1.0 /sysconf(_SC_CLK_TCK));
   }
   return 0;
 }
