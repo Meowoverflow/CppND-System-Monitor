@@ -128,6 +128,9 @@ string LinuxParser::Command(int pid) {
   std::ifstream filestream(kProcDirectory + "/" + to_string(pid) + kCmdlineFilename);
   if (filestream.is_open()) {
     std::getline(filestream, line);
+    if (line.size() > 40) { //remove more than 40 chars in command
+      line = line.substr(0,37) + "...";
+    }
     return line;
   }
   return string();
